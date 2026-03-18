@@ -1,12 +1,21 @@
-import { Meteor } from 'meteor/meteor';  // ✅ was missing!
+import { Meteor }   from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import './Task.html';
 
 Template.task.events({
-  'click .toggle-checked'() {
-    Meteor.call('tasks.setIsChecked', this._id, !this.isChecked);
+  async 'click .toggle-checked'() {
+    try {
+      await Meteor.callAsync('tasks.setIsChecked', this._id, !this.isChecked);
+    } catch (err) {
+      console.error('Failed to update task:', err);
+    }
   },
-  'click .delete'() {
-    Meteor.call('tasks.remove', this._id);
+
+  async 'click .delete'() {
+    try {
+      await Meteor.callAsync('tasks.remove', this._id);
+    } catch (err) {
+      console.error('Failed to delete task:', err);
+    }
   },
 });

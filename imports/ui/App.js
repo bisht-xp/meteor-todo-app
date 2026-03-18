@@ -1,29 +1,28 @@
-import { Template } from 'meteor/templating';
-import { Meteor } from 'meteor/meteor';
+import { Template }     from 'meteor/templating';
+import { Meteor }       from 'meteor/meteor';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { TasksCollection } from '../db/TaskCollection';
+import { Projects }        from './projects/Projects.jsx';  // ✅ import component
 import './App.html';
 import './task/Task.js';
 import './login/Login.js';
 
-const getUser       = () => Meteor.user();
-const isUserLogged  = () => !!getUser();
+const getUser      = () => Meteor.user();
+const isUserLogged = () => !!getUser();
 
 const HIDE_COMPLETED_STRING = 'hideCompleted';
 
 const getTasksFilter = () => {
-  const user = getUser();
-
+  const user                = getUser();
   const hideCompletedFilter = { isChecked: { $ne: true } };
   const userFilter          = user ? { userId: user._id } : {};
   const pendingOnlyFilter   = { ...hideCompletedFilter, ...userFilter };
-
   return { userFilter, pendingOnlyFilter };
 };
 
-Template.mainContainer.onCreated(function mainContainerOnCreated() {
+Template.mainContainer.onCreated(function () {
   this.state = new ReactiveDict();
-  this.subscribe('tasks'); // ✅ subscribe since autopublish is removed
+  this.subscribe('tasks');
 });
 
 Template.mainContainer.events({
@@ -31,7 +30,6 @@ Template.mainContainer.events({
     const current = instance.state.get(HIDE_COMPLETED_STRING);
     instance.state.set(HIDE_COMPLETED_STRING, !current);
   },
-
   'click .user'() {
     Meteor.logout();
   },
@@ -39,14 +37,16 @@ Template.mainContainer.events({
 
 Template.mainContainer.helpers({
   tasks() {
-    const instance     = Template.instance();
+    const instance      = Template.instance();
     const hideCompleted = instance.state.get(HIDE_COMPLETED_STRING);
     const { pendingOnlyFilter, userFilter } = getTasksFilter();
 
     if (!isUserLogged()) return [];
 
+    // Only show tasks NOT linked to a project in the main list
+    const baseFilter = hideCompleted ? pendingOnlyFilter : userFilter;
     return TasksCollection.find(
-      hideCompleted ? pendingOnlyFilter : userFilter,
+      { ...baseFilter, projectId: { $exists: false } },
       { sort: { createdAt: -1 } }
     ).fetch();
   },
@@ -57,34 +57,30 @@ Template.mainContainer.helpers({
 
   incompleteCount() {
     if (!isUserLogged()) return '';
-
     const { pendingOnlyFilter } = getTasksFilter();
-    const count = TasksCollection.find(pendingOnlyFilter).count();
+    const count = TasksCollection.find({
+      ...pendingOnlyFilter,
+      projectId: { $exists: false },
+    }).count();
     return count ? `(${count})` : '';
   },
 
-  isUserLogged() {
-    return isUserLogged();
-  },
+  isUserLogged() { return isUserLogged(); },
+  getUser()      { return getUser(); },
 
-  getUser() {
-    return getUser();
+  // ✅ This is all you need — return the component reference
+  projectsComponent() {
+    return Projects;
   },
 });
 
 Template.form.events({
   'submit .task-form'(event) {
     event.preventDefault();
-
-    const target = event.target;
-    const text   = target.text.value;
-
-    Meteor.call('tasks.insert', text, (error) => {
-      if (error) {
-        alert(error.reason);
-      }
+    const text = event.target.text.value;
+    Meteor.call('tasks.insert', text, (err) => {
+      if (err) alert(err.reason);
     });
-
-    target.text.value = '';
+    event.target.text.value = '';
   },
 });

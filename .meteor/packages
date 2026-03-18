@@ -28,3 +28,5 @@ rspack@1.0.0                  # Integrate Rspack into Meteor for client and serv
 dev-error-overlay
 reactive-dict
 accounts-password
+react-template-helper
+react-meteor-data

@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { TasksCollection } from '../imports/db/TaskCollection';
 import '/imports/api/tasksMethods';
+import '/imports/api/projectsMethods';       // ← missing!
 import '/imports/api/tasksPublications';
+import '/imports/api/projectsPublications';
 
 
 const SEED_USERNAME = "meteorite";

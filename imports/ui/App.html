@@ -1,5 +1,5 @@
 <body>
-  {{> mainContainer }}
+  {{> mainContainer}}
 </body>
 
 <template name="mainContainer">
@@ -14,22 +14,29 @@
 
     <div class="main">
       {{#if isUserLogged}}
-      <div class="user">{{getUser.username}} 🚪</div>
-      {{> form }}
+        <div class="user">{{getUser.username}} 🚪</div>
+        {{> form}}
 
-      <div class="filter">
-        <button id="hide-completed-button">
-          {{#if hideCompleted}} Show All {{else}} Hide Completed {{/if}} {{#if
-          isLoading}}
-          <div class="loading">loading...</div>
-          {{/if}}
-        </button>
-      </div>
+        <div class="filter">
+          <button id="hide-completed-button">
+            {{#if hideCompleted}} Show All {{else}} Hide Completed {{/if}}
+          </button>
+        </div>
 
-      <ul class="tasks">
-        {{#each tasks}} {{> task}} {{/each}}
-      </ul>
-      {{else}} {{> login }} {{/if}}
+        <ul class="tasks">
+          {{#each tasks}} {{> task}} {{/each}}
+        </ul>
+
+        <hr/>
+
+        {{! ✅ React component MUST be alone inside its own wrapper div }}
+        <div>
+          {{> React component=projectsComponent}}
+        </div>
+
+      {{else}}
+        {{> login}}
+      {{/if}}
     </div>
   </div>
 </template>
