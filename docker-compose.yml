@@ -2,7 +2,7 @@ services:
 
   mongo:
     image: mongo:6
-    container_name: todos-mongo
+    container_name: taskify-mongo
     restart: always
     volumes:
       - mongo-data:/data/db
@@ -11,7 +11,7 @@ services:
 
   app:
     build: .
-    container_name: todos-app
+    container_name: taskify-app
     restart: always
     ports:
       - "3000:3000"
