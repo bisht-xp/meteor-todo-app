@@ -1,14 +1,19 @@
 <template name="login">
-  <div class="login-form">
-    <div class="login-card">
+  <div class="auth-page">
+    <div class="auth-card">
 
-      <h2>📝 Tasks</h2>
+      <div class="auth-brand">
+        <h1>Taskify</h1>
+        <p>{{#if showSignup}}Create your account{{else}}Welcome back{{/if}}</p>
+      </div>
 
-      <form class="login-fields" onsubmit="return false;">
+      {{! ── Login form ── }}
+      {{#unless showSignup}}
+      <form class="auth-form login-fields">
+
         <div class="field">
-          <label for="username">Username</label>
+          <label>Username</label>
           <input
-            id="username"
             type="text"
             name="username"
             placeholder="Enter username"
@@ -18,9 +23,8 @@
         </div>
 
         <div class="field">
-          <label for="password">Password</label>
+          <label>Password</label>
           <input
-            id="password"
             type="password"
             name="password"
             placeholder="Enter password"
@@ -29,8 +33,71 @@
           />
         </div>
 
+        {{! Inline error — no alert() }}
+        {{#if authError}}
+          <div class="auth-error">{{authError}}</div>
+        {{/if}}
+
         <button type="submit" class="btn-submit">Sign in</button>
       </form>
+      {{/unless}}
+
+      {{! ── Signup form ── }}
+      {{#if showSignup}}
+      <form class="auth-form register-fields">
+
+        <div class="field">
+          <label>Username</label>
+          <input
+            type="text"
+            name="username"
+            placeholder="Choose a username"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="At least 6 characters"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label>Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        {{! Inline error — no alert() }}
+        {{#if authError}}
+          <div class="auth-error">{{authError}}</div>
+        {{/if}}
+
+        <button type="submit" class="btn-submit">Create account</button>
+      </form>
+      {{/if}}
+
+      {{! ── Toggle ── }}
+      <div class="auth-toggle">
+        {{#if showSignup}}
+          Already have an account?
+          <span class="auth-toggle-link">Sign in</span>
+        {{else}}
+          Don't have an account?
+          <span class="auth-toggle-link">Sign up</span>
+        {{/if}}
+      </div>
 
     </div>
   </div>

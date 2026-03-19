@@ -1,21 +1,91 @@
-import { Meteor } from 'meteor/meteor';
-import { Template } from 'meteor/templating';
+import { Meteor }      from 'meteor/meteor';
+import { Accounts }    from 'meteor/accounts-base';
+import { Template }    from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
 import './Login.html';
 
-Template.login.events({
-  'submit .login-form'(e) {
-    e.preventDefault();
-    const target = e.target;
-    const username = target.username.value;
-    const password = target.password.value;
+Template.login.onCreated(function () {
+  this.showSignup = new ReactiveVar(false);
+  this.authError  = new ReactiveVar('');
+});
 
-    Meteor.loginWithPassword(username, password, (error) => {
-      if (error) {
-        console.error("Login Error:", error);
-        alert("Login failed: " + error.reason);
-      } else {
-        console.log("Login successful!");
+Template.login.helpers({
+  showSignup() { return Template.instance().showSignup.get(); },
+  authError()  { return Template.instance().authError.get(); },
+});
+
+Template.login.events({
+  // ── Toggle between login / signup ────────────────────
+  'click .auth-toggle-link'(e, instance) {
+    instance.showSignup.set(!instance.showSignup.get());
+    instance.authError.set('');
+  },
+
+  // ── Login ─────────────────────────────────────────────
+  'submit .login-fields'(e, instance) {
+    e.preventDefault();
+    instance.authError.set('');
+
+    const username = e.target.username.value.trim();
+    const password = e.target.password.value;
+
+    if (!username || !password) {
+      instance.authError.set('Please fill in all fields.');
+      return;
+    }
+
+    Meteor.loginWithPassword(username, password, (err) => {
+      if (err) {
+        // Map Meteor error reasons to friendly messages
+        const messages = {
+          'User not found':         'No account found with that username.',
+          'Incorrect password':     'Incorrect password. Please try again.',
+          'Match failed':           'Please fill in all fields.',
+        };
+        instance.authError.set(
+          messages[err.reason] || 'Login failed. Please try again.'
+        );
       }
     });
-  }
+  },
+
+  // ── Signup ────────────────────────────────────────────
+  'submit .register-fields'(e, instance) {
+    e.preventDefault();
+    instance.authError.set('');
+
+    const username        = e.target.username.value.trim();
+    const password        = e.target.password.value;
+    const confirmPassword = e.target.confirmPassword.value;
+
+    // Client-side validation first
+    if (!username || !password) {
+      instance.authError.set('Please fill in all fields.');
+      return;
+    }
+    if (username.length < 3) {
+      instance.authError.set('Username must be at least 3 characters.');
+      return;
+    }
+    if (password.length < 6) {
+      instance.authError.set('Password must be at least 6 characters.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      instance.authError.set('Passwords do not match.');
+      return;
+    }
+
+    Accounts.createUser({ username, password }, (err) => {
+      if (err) {
+        const messages = {
+          'Username already exists': 'That username is already taken.',
+        };
+        instance.authError.set(
+          messages[err.reason] || 'Could not create account. Try again.'
+        );
+      }
+      // On success Meteor auto logs in — no extra step needed
+    });
+  },
 });

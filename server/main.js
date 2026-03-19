@@ -15,14 +15,12 @@ Meteor.startup(async () => {
   let user = await Meteor.users.findOneAsync({ username: SEED_USERNAME });
 
   if (!user) {
-    console.log("--- CREATING SEED USER ---");
     try {
       const userId = await Accounts.createUserAsync({
         username: SEED_USERNAME,
         password: SEED_PASSWORD,
       });
       user = await Meteor.users.findOneAsync(userId);
-      console.log("--- SEED USER CREATED SUCCESSFULLY ---");
     } catch (e) {
       console.error("Error creating user:", e.reason || e.message);
       return; // stop if user creation failed
@@ -31,7 +29,6 @@ Meteor.startup(async () => {
     console.log("--- SEED USER ALREADY EXISTS ---");
   }
 
-  // ✅ Now user._id is safely available here
   if ((await TasksCollection.find().countAsync()) === 0) {
     console.log("--- SEEDING TASKS ---");
     const seedTasks = [

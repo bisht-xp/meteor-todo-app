@@ -2,6 +2,8 @@ import { Template } from "meteor/templating";
 import { Meteor } from "meteor/meteor";
 import { GroupTasks } from "./react/GroupTasks.jsx";
 import TaskList from "./react/components/TaskList.jsx";
+import UserMenu from "./react/components/UserMenu.jsx";
+import React from "react";
 
 import "./App.html";
 import "./login/Login.js";
@@ -27,6 +29,11 @@ Template.mainContainer.helpers({
 
   getUser() {
     return getUser();
+  },
+
+  userMenuComponent() {
+    const username = getUser()?.username;
+    return () => React.createElement(UserMenu, { username });
   },
 
   taskListComponent() {

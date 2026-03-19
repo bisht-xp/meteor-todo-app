@@ -282,18 +282,12 @@ input[type="checkbox"]:checked::after {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 4px 16px;
   border-radius: var(--radius);
   border: 1px solid transparent;
   transition: all var(--transition);
-}
-
-.tasks > li:hover {
   background: var(--bg-card);
   border-color: var(--border);
-}
-
-.tasks > li:hover .delete {
   opacity: 1;
 }
 
@@ -374,7 +368,7 @@ input[type="checkbox"]:checked::after {
 
 .project-filter {
   max-width: var(--max-w);
-  margin: 20px auto ;
+  margin: 20px auto;
   display: flex;
   justify-content: space-between;
   gap: 4px;
@@ -400,7 +394,6 @@ input[type="checkbox"]:checked::after {
   padding: 8px 12px;
 }
 
-
 .no-projects,
 .no-tasks {
   font-size: 0.82rem;
@@ -418,6 +411,98 @@ input[type="checkbox"]:checked::after {
   border-radius: var(--radius);
   padding: 8px 12px;
   margin-bottom: 12px;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 1;
+  transition: opacity var(--transition);
+}
+
+.assign-wrapper {
+  position: relative;
+}
+
+.assign-trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid transparent;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  transition: all var(--transition);
+}
+
+.assign-trigger:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.assign-dropdown {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: -40px;
+  width: 190px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-focus);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 300;
+  overflow: hidden;
+  animation: slide-up 0.15s ease;
+}
+
+.assign-dropdown p {
+  text-align: center;
+}
+
+.assign-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 12px 6px;
+}
+
+.assign-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--text-sub);
+  font-size: 0.82rem;
+  border-radius: 0;
+  text-align: left;
+  transition: all var(--transition);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assign-option:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.assign-empty,
+.assign-error {
+  font-size: 0.78rem;
+  padding: 8px 12px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.assign-error {
+  color: var(--red);
 }
 
 .login-form {
@@ -518,7 +603,7 @@ input[type="checkbox"]:checked::after {
   padding: 24px;
   animation: fade-in 0.15s ease;
 }
- 
+
 .modal {
   background: var(--bg-card);
   border: 1px solid var(--border-focus);
@@ -528,20 +613,20 @@ input[type="checkbox"]:checked::after {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
   animation: slide-up 0.2s ease;
 }
- 
+
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 20px 0;
 }
- 
+
 .modal-header h3 {
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
- 
+
 .modal-close {
   background: transparent;
   color: var(--text-dim);
@@ -549,22 +634,22 @@ input[type="checkbox"]:checked::after {
   padding: 4px 8px;
   border-radius: 6px;
 }
- 
+
 .modal-close:hover {
   background: var(--bg-input);
   color: var(--text);
 }
- 
+
 .modal-body {
   padding: 12px 20px 20px;
 }
- 
+
 .modal-body p {
   font-size: 0.88rem;
   color: var(--text-sub);
   line-height: 1.6;
 }
- 
+
 .modal-footer {
   display: flex;
   gap: 8px;
@@ -572,35 +657,281 @@ input[type="checkbox"]:checked::after {
   padding: 16px 20px;
   border-top: 1px solid var(--border);
 }
- 
+
 .modal-btn-cancel {
   background: var(--bg-input);
   color: var(--text-sub);
   border: 1px solid var(--border);
 }
- 
+
 .modal-btn-cancel:hover {
   background: var(--bg-raised);
   color: var(--text);
 }
- 
+
 .modal-btn-confirm {
   background: var(--red);
   color: #fff;
 }
- 
+
 .modal-btn-confirm:hover {
   background: #f2555a;
 }
- 
+
 @keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
- 
+
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px 4px 4px;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.user-trigger:hover,
+.user-trigger.active {
+  border-color: var(--border-focus);
+  color: var(--text);
+  background: var(--bg-raised);
+}
+
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.chevron {
+  color: var(--text-dim);
+  transition: transform var(--transition);
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown ── */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-focus);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 200;
+  animation: slide-up 0.15s ease;
+}
+
+.dropdown-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.dropdown-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dropdown-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.dropdown-username {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-role {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.dropdown-divider {
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  color: var(--text-sub);
+  font-size: 0.82rem;
+  border-radius: 0;
+  text-align: left;
+  transition: all var(--transition);
+}
+
+.dropdown-item:hover {
+  background: var(--bg-input);
+  color: var(--text);
+}
+
+.dropdown-item.logout:hover {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+/* ─── Auth page ──────────────────────────────────────── */
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 56px);
+  padding: 24px;
+}
+
+.auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-brand h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+
+.auth-brand p {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+.auth-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.auth-form label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Inline error box ── */
+.auth-error {
+  font-size: 0.82rem;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 11px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--transition);
+  margin-top: 4px;
+}
+
+.btn-submit:hover {
+  background: var(--accent-h);
+}
+
+.auth-toggle {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+.auth-toggle-link {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.auth-toggle-link:hover {
+  color: var(--accent-h);
 }
 
 @media (max-width: 640px) {

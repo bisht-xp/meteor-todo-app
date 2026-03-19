@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
-// import { useTaskList } from "../hooks/useTaskList";
 import Task from "./Task";
 import { useTracker } from "meteor/react-meteor-data";
 import { TasksCollection } from "../../../db/TaskCollection";
@@ -13,7 +12,6 @@ const TaskList = () => {
     const sub = Meteor.subscribe("tasks");
     return {
       isLoading: !sub.ready(),
-      // Only tasks with NO projectId belong to the main list
       tasks: TasksCollection.find(
         { projectId: { $exists: false } },
         { sort: { createdAt: -1 } },
@@ -58,7 +56,6 @@ const TaskList = () => {
 
   return (
     <div className="tasklist-section">
-      {/* ── Add Task Form ── */}
       <form className="task-form" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -69,7 +66,6 @@ const TaskList = () => {
         <button type="submit">Add Task</button>
       </form>
 
-      
       <div className="filter">
         <button
           id="hide-completed-button"
@@ -95,6 +91,7 @@ const TaskList = () => {
               task={task}
               onToggle={toggleTask}
               onDelete={deleteTask}
+              showAssign={true}
             />
           ))
         )}
