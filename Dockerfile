@@ -1,23 +1,29 @@
-# No Meteor image needed — we use the pre-built bundle
+# Stage 1: Build the Meteor app
+FROM geoffreybooth/meteor-base:3.0 AS builder
+
+# Copy package.json and install dependencies
+COPY package*.json $APP_SOURCE_FOLDER/
+RUN bash $SCRIPTS_FOLDER/build-app-npm-dependencies.sh
+
+# Copy the rest of the application code and build the bundle
+COPY . $APP_SOURCE_FOLDER/
+RUN bash $SCRIPTS_FOLDER/build-meteor-bundle.sh
+
+# Stage 2: Run the built Node.js app
 FROM node:20-alpine
 
-WORKDIR /app
+ENV APP_BUNDLE_FOLDER /opt/bundle
+ENV SCRIPTS_FOLDER /docker
 
-# Install tools needed to extract and build native modules
-RUN apk add --no-cache bash python3 make g++
+# Copy the built scripts and bundle from the builder stage
+COPY --from=builder $SCRIPTS_FOLDER $SCRIPTS_FOLDER/
+COPY --from=builder $APP_BUNDLE_FOLDER/bundle $APP_BUNDLE_FOLDER/bundle/
 
-# Copy the pre-built Meteor bundle
-COPY bundle.tar.gz .
+# Install the production NPM dependencies for the server
+RUN bash $SCRIPTS_FOLDER/build-meteor-npm-dependencies.sh
 
-# Extract it
-RUN tar -xzf bundle.tar.gz && rm bundle.tar.gz
-
-# Install production dependencies inside the bundle
-WORKDIR /app/bundle/programs/server
-RUN npm install --production
-
-WORKDIR /app/bundle
-
+# Expose the port Railway will route to
 EXPOSE 3000
 
-CMD ["node", "main.js"]
+# Start the Node app
+CMD ["node", "/opt/bundle/bundle/main.js"]

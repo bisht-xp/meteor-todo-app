@@ -4,46 +4,43 @@
 
 <template name="mainContainer">
   <div class="app">
+
     <header>
       <div class="app-bar">
         <div class="app-header">
-          <h1>📝️ To Do List {{incompleteCount}}</h1>
+          <h1>Taskify</h1>
         </div>
+        {{#if isUserLogged}}
+          <div class="user">{{getUser.username}}
+            <i data-lucide="log-out"></i>
+          </div>
+        {{/if}}
       </div>
     </header>
 
     <div class="main">
-      {{#if isUserLogged}}
-        <div class="user">{{getUser.username}} 🚪</div>
-        {{> form}}
 
-        <div class="filter">
-          <button id="hide-completed-button">
-            {{#if hideCompleted}} Show All {{else}} Hide Completed {{/if}}
-          </button>
-        </div>
-
-        <ul class="tasks">
-          {{#each tasks}} {{> task}} {{/each}}
-        </ul>
-
-        <hr/>
-
-        {{! ✅ React component MUST be alone inside its own wrapper div }}
-        <div>
-          {{> React component=projectsComponent}}
-        </div>
+      {{#if isLoggingIn}}
+        
+        <div class="loading">Loading</div>
 
       {{else}}
-        {{> login}}
+        {{#if isUserLogged}}
+          <div>{{> React component=taskListComponent}}</div>
+          <hr class="section-divider" />
+          <div>{{> React component=reactComponent}}</div>
+        {{else}}
+          {{> login}}
+        {{/if}}
       {{/if}}
+
     </div>
   </div>
 </template>
 
-<template name="form">
+<!-- <template name="form">
   <form class="task-form">
-    <input type="text" name="text" placeholder="Type to add new tasks" />
+    <input type="text" name="text" placeholder="Add a task..." />
     <button type="submit">Add Task</button>
   </form>
-</template>
+</template> -->
