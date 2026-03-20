@@ -73,7 +73,6 @@ taskify/
 │       │   ├── Login.html
 │       │   └── Login.js
 │       └── react/
-│           ├── TabsLayout.jsx
 │           ├── GroupTasks.jsx
 │           └── components/
 │               ├── TaskList.jsx
