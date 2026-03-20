@@ -15,13 +15,11 @@ Template.login.helpers({
 });
 
 Template.login.events({
-  // ── Toggle between login / signup ────────────────────
   'click .auth-toggle-link'(e, instance) {
     instance.showSignup.set(!instance.showSignup.get());
     instance.authError.set('');
   },
 
-  // ── Login ─────────────────────────────────────────────
   'submit .login-fields'(e, instance) {
     e.preventDefault();
     instance.authError.set('');
@@ -36,7 +34,6 @@ Template.login.events({
 
     Meteor.loginWithPassword(username, password, (err) => {
       if (err) {
-        // Map Meteor error reasons to friendly messages
         const messages = {
           'User not found':         'No account found with that username.',
           'Incorrect password':     'Incorrect password. Please try again.',
@@ -58,7 +55,6 @@ Template.login.events({
     const password        = e.target.password.value;
     const confirmPassword = e.target.confirmPassword.value;
 
-    // Client-side validation first
     if (!username || !password) {
       instance.authError.set('Please fill in all fields.');
       return;
@@ -85,7 +81,6 @@ Template.login.events({
           messages[err.reason] || 'Could not create account. Try again.'
         );
       }
-      // On success Meteor auto logs in — no extra step needed
     });
   },
 });

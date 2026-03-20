@@ -13,7 +13,6 @@ const AssignProject = ({ taskId, onAssigned }) => {
   const [error, setError] = useState("");
   const ref = useRef(null);
 
-  // Get all projects reactively
   const projects = useTracker(() => {
     Meteor.subscribe("projects");
     return ProjectsCollection.find({}, { sort: { createdAt: -1 } }).fetch();

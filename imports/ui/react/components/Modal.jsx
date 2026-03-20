@@ -8,7 +8,6 @@ const Modal = ({
   message,
   confirmLabel = "Delete",
 }) => {
-  // Close on Escape key
   useEffect(() => {
     if (!isOpen) return;
 
@@ -28,9 +27,7 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    // Backdrop — click outside modal to close
     <div className="modal-backdrop" onClick={onClose}>
-      {/* Stop clicks inside modal from closing it */}
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{title}</h3>

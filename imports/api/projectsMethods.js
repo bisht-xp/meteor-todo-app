@@ -28,12 +28,10 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized', 'You must be logged in');
     }
 
-    // Also delete all tasks belonging to this project
     await TasksCollection.removeAsync({ projectId });
     return await ProjectsCollection.removeAsync(projectId);
   },
 
-  // Add a task directly inside a project
   async 'tasks.insertInProject'(text, projectId) {
     check(text, String);
     check(projectId, String);
@@ -48,7 +46,7 @@ Meteor.methods({
     return await TasksCollection.insertAsync({
       text:      text.trim(),
       userId:    this.userId,
-      projectId,           // link task to project
+      projectId,      
       createdAt: new Date(),
       isChecked: false,
     });
